@@ -69,11 +69,12 @@ export default function makeUserQuery({database}){
           })
         return {
           status: "Success",
-          message: "Member created"
+          message: "Successfully added"
         }
     }
 
     async function auth ({ email, password }) {
+
         email = email.toLowerCase()
         const db = await database
         const found = await db

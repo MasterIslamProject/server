@@ -60,7 +60,6 @@ export default function makeTrendingEndpointHandler({trendingQuery}){
       }
       else {
         const result = await trendingQuery.getTrending({ max, before, after })
-        
         return {
           headers: {
             'Content-Type': 'application/json'
