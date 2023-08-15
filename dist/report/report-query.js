@@ -98,8 +98,7 @@ function makeReportQuery({
         reportee_category: report.reportee_category,
         reportee_email: report.reportee_email,
         report_category: report.report_category,
-        comment: report.comment,
-        date: report.date
+        comment: report.comment
       }
     };
     /*if (id) {

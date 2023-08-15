@@ -46,6 +46,8 @@ function makeQuitQuery({
     quitId,
     ...quit
   }) {
+    let date = new Date();
+    quit.date = date.toISOString();
     const db = await database;
 
     if (quitId) {

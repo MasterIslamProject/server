@@ -25,6 +25,7 @@ function makeUserQuery({
     getUser,
     findById,
     findByEmail,
+    findVerifyEmail,
     findByCategory,
     auth,
     reset,
@@ -58,6 +59,8 @@ function makeUserQuery({
     userId,
     ...user
   }) {
+    let date = new Date();
+    user.date = date.toISOString();
     const db = await database;
 
     if (userId) {
@@ -200,7 +203,6 @@ function makeUserQuery({
         category_desc: user.category_desc,
         password: bcrypt.hashSync(user.password, 10),
         bio: user.bio,
-        date: user.date,
         status: user.status,
         n_query: user.n_query
       }
@@ -250,7 +252,6 @@ function makeUserQuery({
         category_desc: user.category_desc,
         password: user.password,
         bio: user.bio,
-        date: user.date,
         status: user.status,
         n_query: user.n_query
       }
@@ -306,6 +307,28 @@ function makeUserQuery({
     }
 
     return {};
+  }
+
+  async function findVerifyEmail({
+    verifyemail
+  }) {
+    console.log("verify email query: " + verifyemail);
+    const db = await database;
+    const found = await db.collection('Users').findOne({
+      email: verifyemail
+    });
+
+    if (found) {
+      return {
+        status: "Found",
+        message: "Email exists"
+      };
+    }
+
+    return {
+      status: "Missing",
+      message: "Email missing"
+    };
   }
 
   async function findByCategory({

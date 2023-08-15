@@ -103,7 +103,8 @@ app.post('/user/reset_password', authenticate, userController);
 app.delete('/user/:id', authenticate, userController);
 app.get('/user/?category=:category', authenticate, userController);
 app.get('/user/?id=:id', authenticate, userController);
-app.get('/user/find/?email=:email', authenticate, userController);
+app.get('/user/?email=:email', authenticate, userController);
+app.get('/user/?verifyemail=:verifyemail', userController);
 
 function userController (req, res) {
     const httpRequest = adaptRequest(req)

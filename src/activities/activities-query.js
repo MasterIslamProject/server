@@ -32,6 +32,9 @@ export default function makeActivitiesQuery({database}){
 
 
     async function add ({ activitiesId, ...activities }) {
+        let date = new Date()
+        activities.date = date.toISOString()
+
         const db = await database
         if (activitiesId) {
           activities._id = db.makeId(activitiesId)
@@ -68,8 +71,7 @@ export default function makeActivitiesQuery({database}){
           topic: activities.topic,
           comment: activities.comment,
           banner: activities.banner,
-          password: activities.password,
-          date: activities.date
+          password: activities.password
         } 
       }
       /*if (id) {

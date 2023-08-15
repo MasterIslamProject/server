@@ -39,8 +39,6 @@ export default function makeTrendingReactCommentQuery({database}){
 
     async function add ({ trendingReactCommentId, ...trendingReactComment }) {
         let date = new Date()
-        // console.log(date.toISOString())
-
         trendingReactComment.date = date.toISOString()
 
         const db = await database

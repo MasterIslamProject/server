@@ -36,55 +36,56 @@ export default function makeTrendingReactQuery({database}){
 
 
     async function add ({ trendingReactId, ...trendingReact }) {
-      
-        const db = await database
-        if (trendingReactId) {
-          trendingReact._id = db.makeId(trendingReactId)
-        }
+      let date = new Date()
+      trendingReact.date = date.toISOString()
 
-        return db.collection("TrendingReact")
-          .insertOne(trendingReact)
-          .then(result => {
-            //console.log(result.insertedId);
-            return {
-              // success: result.ok === 1,
-              // id: result.insertedId
-              status: "success",
-              message: result.insertedId
+      const db = await database
+      if (trendingReactId) {
+        trendingReact._id = db.makeId(trendingReactId)
+      }
+
+      return db.collection("TrendingReact")
+        .insertOne(trendingReact)
+        .then(result => {
+          //console.log(result.insertedId);
+          return {
+            // success: result.ok === 1,
+            // id: result.insertedId
+            status: "success",
+            message: result.insertedId
+          }
+      }).catch(mongoError => {
+        const [errorCode] = mongoError.message.split(' ')
+            if (errorCode === 'E11000') {
+              const [_, mongoIndex] = mongoError.message.split(':')[2].split(' ')
+              throw new UniqueConstraintError(
+                mongoIndex === 'ContactEmailIndex' ? 'emailAddress' : 'contactId'
+              )
             }
-        }).catch(mongoError => {
-          const [errorCode] = mongoError.message.split(' ')
-              if (errorCode === 'E11000') {
-                const [_, mongoIndex] = mongoError.message.split(':')[2].split(' ')
-                throw new UniqueConstraintError(
-                  mongoIndex === 'ContactEmailIndex' ? 'emailAddress' : 'contactId'
-                )
-              }
-              throw mongoError
-        });
+            throw mongoError
+      });
         
     }
 
-    async function verify ({ trendingReactInfo }) {
-      
+    async function verify (trendingReactInfo) {
       const db = await database
-      const found = await db
-        .collection('TrendingReact')
-        .findOne({ trending_id: trendingReactInfo.trending_id, mentor_id: trendingReactInfo.mentor_id })
-      
 
-      if (found) {
-        return {
-          message: "Success",
-          status: "Found"
-        };
-      }
-      else {
+      const found =  await db
+        .collection('TrendingReact')
+        .find({ trending_id: trendingReactInfo.trending_id, mentor_id: trendingReactInfo.mentor_id }).count()
+
+        if (found > 0) {
+          return {
+            message: "Success",
+            status: "Found"
+          };
+        }
+        else {
           return {
             message: "Error",
             status :"Null"
           }
-      }
+        }
       
     }
 
@@ -107,8 +108,7 @@ export default function makeTrendingReactQuery({database}){
           video: trendingReact.video,
           type: trendingReact.type,
           caption: trendingReact.caption,
-          password: trendingReact.password,
-          date: trendingReact.date,
+          password: trendingReact.password
         } 
       }
 

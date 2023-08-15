@@ -43,6 +43,9 @@ function makeUserEndpointHandler({
       email
     } = httpRequest.queryParams || {};
     const {
+      verifyemail
+    } = httpRequest.queryParams || {};
+    const {
       category
     } = httpRequest.queryParams || {};
     const {
@@ -54,6 +57,20 @@ function makeUserEndpointHandler({
     if (email !== undefined) {
       const result = await userQuery.findByEmail({
         email
+      });
+      return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        statusCode: 200,
+        data: JSON.stringify(result)
+      };
+    }
+
+    if (verifyemail !== undefined) {
+      console.log("verify email endpoint: " + verifyemail);
+      const result = await userQuery.findVerifyEmail({
+        verifyemail
       });
       return {
         headers: {

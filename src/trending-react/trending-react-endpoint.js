@@ -137,7 +137,6 @@ export default function makeTrendingReactEndpointHandler({trendingReactQuery}){
             }
           }
           else if (httpRequest.path == '/trending-react/verify'){
-            
             const result = await trendingReactQuery.verify(trendingReactInfo)
             return {
               headers: {

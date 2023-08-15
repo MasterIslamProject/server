@@ -76,7 +76,6 @@ function makeTrendingEndpointHandler({
         before,
         after
       });
-      console.log(result);
       return {
         headers: {
           'Content-Type': 'application/json'

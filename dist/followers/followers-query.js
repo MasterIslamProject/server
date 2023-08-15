@@ -282,8 +282,7 @@ function makefollowersQuery({
         othernames: follower.othernames,
         image: follower.image,
         password: follower.password,
-        desc: follower.desc,
-        date: follower.date
+        desc: follower.desc
       }
     };
     /*if (id) {

@@ -11,6 +11,7 @@ export default function makeUserQuery({database}){
         getUser,
         findById,
         findByEmail,
+        findVerifyEmail,
         findByCategory,
         auth,
         reset,
@@ -37,40 +38,43 @@ export default function makeUserQuery({database}){
     }
 
     async function add ({ userId, ...user}) {
-        const db = await database
-        if (userId) {
-          user._id = db.makeId(userId)
-        }
-       
-        user.password = bcrypt.hashSync(user.password, 10);
-        const found = await db
-          .collection('Users')
-          .findOne({ email: user.email })
+      let date = new Date()
+      user.date = date.toISOString()
 
-        if (found) {
-          return {
-            status: "Error",
-            message: "Email already exist"
-          };
-        }
+      const db = await database
+      if (userId) {
+        user._id = db.makeId(userId)
+      }
+      
+      user.password = bcrypt.hashSync(user.password, 10);
+      const found = await db
+        .collection('Users')
+        .findOne({ email: user.email })
 
-        const { result, ops } = await db
-          .collection('Users')
-          .insertOne(user)
-          .catch(mongoError => {
-            const [errorCode] = mongoError.message.split(' ')
-            if (errorCode === 'E11000') {
-              const [_, mongoIndex] = mongoError.message.split(':')[2].split(' ')
-              throw new UniqueConstraintError(
-                mongoIndex === 'ContactEmailIndex' ? 'emailAddress' : 'contactId'
-              )
-            }
-            throw mongoError
-          })
+      if (found) {
         return {
-          status: "Success",
-          message: "Successfully added"
-        }
+          status: "Error",
+          message: "Email already exist"
+        };
+      }
+
+      const { result, ops } = await db
+        .collection('Users')
+        .insertOne(user)
+        .catch(mongoError => {
+          const [errorCode] = mongoError.message.split(' ')
+          if (errorCode === 'E11000') {
+            const [_, mongoIndex] = mongoError.message.split(':')[2].split(' ')
+            throw new UniqueConstraintError(
+              mongoIndex === 'ContactEmailIndex' ? 'emailAddress' : 'contactId'
+            )
+          }
+          throw mongoError
+        })
+      return {
+        status: "Success",
+        message: "Successfully added"
+      }
     }
 
     async function auth ({ email, password }) {
@@ -181,7 +185,6 @@ export default function makeUserQuery({database}){
             category_desc: user.category_desc,
             password: bcrypt.hashSync(user.password, 10),
             bio: user.bio,
-            date: user.date,
             status: user.status,
             n_query: user.n_query
           } 
@@ -228,7 +231,6 @@ export default function makeUserQuery({database}){
           category_desc: user.category_desc,
           password: user.password,
           bio: user.bio,
-          date: user.date,
           status: user.status,
           n_query: user.n_query
         } 
@@ -277,6 +279,24 @@ export default function makeUserQuery({database}){
       return documentToUser(found)
     }
     return {}
+  }
+
+  async function findVerifyEmail ({ verifyemail }) {
+    console.log("verify email query: "+verifyemail)
+    const db = await database
+    const found = await db
+      .collection('Users')
+      .findOne({ email: verifyemail })
+    if (found) {
+      return {
+        status: "Found",
+        message: "Email exists"
+      }
+    }
+    return {
+      status: "Missing",
+      message: "Email missing"
+    }
   }
 
   async function findByCategory ({ category }) {

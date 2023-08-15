@@ -51,6 +51,8 @@ function makeActivitiesQuery({
     activitiesId,
     ...activities
   }) {
+    let date = new Date();
+    activities.date = date.toISOString();
     const db = await database;
 
     if (activitiesId) {
@@ -90,8 +92,7 @@ function makeActivitiesQuery({
         topic: activities.topic,
         comment: activities.comment,
         banner: activities.banner,
-        password: activities.password,
-        date: activities.date
+        password: activities.password
       }
     };
     /*if (id) {

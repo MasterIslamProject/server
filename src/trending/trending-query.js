@@ -31,27 +31,30 @@ export default function makeTrendingQuery({database}){
 
 
     async function add ({ trendingId, ...trending }) {
-        const db = await database
-        if (trendingId) {
-          trending._id = db.makeId(trendingId)
-        }
-        const { result, ops } = await db
-          .collection('Trending')
-          .insertOne(trending)
-          .catch(mongoError => {
-            const [errorCode] = mongoError.message.split(' ')
-            if (errorCode === 'E11000') {
-              const [_, mongoIndex] = mongoError.message.split(':')[2].split(' ')
-              throw new UniqueConstraintError(
-                
-              )
-            }
-            throw mongoError
-          })
-        return {
-            success: result.ok === 1,
-            created: documentToTrending(ops[0])
-        }
+      let date = new Date()
+      trending.date = date.toISOString()
+
+      const db = await database
+      if (trendingId) {
+        trending._id = db.makeId(trendingId)
+      }
+      const { result, ops } = await db
+        .collection('Trending')
+        .insertOne(trending)
+        .catch(mongoError => {
+          const [errorCode] = mongoError.message.split(' ')
+          if (errorCode === 'E11000') {
+            const [_, mongoIndex] = mongoError.message.split(':')[2].split(' ')
+            throw new UniqueConstraintError(
+              
+            )
+          }
+          throw mongoError
+        })
+      return {
+          success: result.ok === 1,
+          created: documentToTrending(ops[0])
+      }
     }
 
   async function update ({ id, ...trending }) {
@@ -69,8 +72,7 @@ export default function makeTrendingQuery({database}){
           num_response: trending.num_response,
           video: trending.video,
           type: trending.type,
-          keywords: trending.keywords,
-          date: trending.date
+          keywords: trending.keywords
         } 
       }
       /*if (id) {

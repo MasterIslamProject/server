@@ -26,6 +26,7 @@ export default function makefollowersQuery({database}){
     });
 
     async function getFollowers ({ max = 100, before, after } = {}) {
+     
         const db = await database;
         const query = {}
         if (before || after) {
@@ -269,8 +270,7 @@ export default function makefollowersQuery({database}){
           othernames: follower.othernames,
           image: follower.image,
           password: follower.password,
-          desc: follower.desc,
-          date: follower.date
+          desc: follower.desc
         } 
       }
       /*if (id) {

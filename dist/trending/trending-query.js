@@ -51,6 +51,8 @@ function makeTrendingQuery({
     trendingId,
     ...trending
   }) {
+    let date = new Date();
+    trending.date = date.toISOString();
     const db = await database;
 
     if (trendingId) {
@@ -92,8 +94,7 @@ function makeTrendingQuery({
         num_response: trending.num_response,
         video: trending.video,
         type: trending.type,
-        keywords: trending.keywords,
-        date: trending.date
+        keywords: trending.keywords
       }
     };
     /*if (id) {

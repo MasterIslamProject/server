@@ -55,6 +55,8 @@ function makeTrendingReactQuery({
     trendingReactId,
     ...trendingReact
   }) {
+    let date = new Date();
+    trendingReact.date = date.toISOString();
     const db = await database;
 
     if (trendingReactId) {
@@ -81,16 +83,14 @@ function makeTrendingReactQuery({
     });
   }
 
-  async function verify({
-    trendingReactInfo
-  }) {
+  async function verify(trendingReactInfo) {
     const db = await database;
-    const found = await db.collection('TrendingReact').findOne({
+    const found = await db.collection('TrendingReact').find({
       trending_id: trendingReactInfo.trending_id,
       mentor_id: trendingReactInfo.mentor_id
-    });
+    }).count();
 
-    if (found) {
+    if (found > 0) {
       return {
         message: "Success",
         status: "Found"
@@ -123,8 +123,7 @@ function makeTrendingReactQuery({
         video: trendingReact.video,
         type: trendingReact.type,
         caption: trendingReact.caption,
-        password: trendingReact.password,
-        date: trendingReact.date
+        password: trendingReact.password
       }
     };
     const {

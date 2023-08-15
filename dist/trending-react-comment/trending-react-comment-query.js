@@ -58,8 +58,7 @@ function makeTrendingReactCommentQuery({
     trendingReactCommentId,
     ...trendingReactComment
   }) {
-    let date = new Date(); // console.log(date.toISOString())
-
+    let date = new Date();
     trendingReactComment.date = date.toISOString();
     const db = await database;
 
