@@ -38,6 +38,13 @@ var cors = require('cors');
 
 const app = (0, _express.default)();
 app.use(_bodyParser.default.json());
+
+const fs = require('fs');
+
+const https = require('https');
+
+const cert = fs.readFileSync('src/certificate.crt');
+const key = fs.readFileSync('src/private.key');
 const port = process.env.PORT || 9090; //Middleware
 
 app.use(_express.default.urlencoded({
@@ -45,6 +52,10 @@ app.use(_express.default.urlencoded({
 }));
 app.use(_express.default.json());
 app.use(cors());
+const credentials = {
+  key,
+  cert
+};
 
 function authenticate(req, res, next) {
   const httpRequest = (0, _adaptRequest.default)(req);
@@ -293,4 +304,6 @@ app.use((err, req, res, next) => {
 
 });
 app.listen(port, () => console.log(`Listening on port 9090` + process.env.PORT || 9090));
+const httpServer = https.createServer(credentials, app);
+httpServer.listen(9443);
 //# sourceMappingURL=index.js.map

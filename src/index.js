@@ -41,6 +41,11 @@ app.use(express.json());
 
 app.use(cors());
 
+const credentials = {
+  key,
+  cert
+}
+
 
 function authenticate (req, res, next) {
   const httpRequest = adaptRequest(req)
