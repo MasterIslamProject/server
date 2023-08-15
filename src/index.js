@@ -27,6 +27,12 @@ var cors = require('cors')
 const app = express();
 app.use(bodyParser.json());
 
+const fs = require('fs')
+const https = require('https')
+
+const cert = fs.readFileSync('src/certificate.crt')
+const key = fs.readFileSync('src/private.key')
+
 const port = process.env.PORT || 9090;
 
 //Middleware
@@ -351,3 +357,6 @@ app.use((err, req, res, next) => {
 
 
 app.listen(port, () => console.log(`Listening on port 9090`+process.env.PORT || 9090));
+
+const httpServer = https.createServer(credentials, app);
+httpServer.listen(9443)
