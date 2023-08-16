@@ -41,10 +41,10 @@ app.use(_bodyParser.default.json());
 
 const fs = require('fs');
 
-const https = require('https');
+const https = require('https'); // const cert = fs.readFileSync('src/certificate.crt')
+// const key = fs.readFileSync('src/private.key')
 
-const cert = fs.readFileSync('src/certificate.crt');
-const key = fs.readFileSync('src/private.key');
+
 const port = process.env.PORT || 9090; //Middleware
 
 app.use(_express.default.urlencoded({
@@ -52,10 +52,12 @@ app.use(_express.default.urlencoded({
 }));
 app.use(_express.default.json());
 app.use(cors());
-const credentials = {
-  key,
-  cert
-};
+app.get('/.well-known/pki-validation/8500F0D835681EC5795D4277F922F074.txt', (req, res) => {
+  res.sendFile('/home/ec2-user/server/src/8500F0D835681EC5795D4277F922F074.txt');
+}); // const credentials = {
+//   key,
+//   cert
+// }
 
 function authenticate(req, res, next) {
   const httpRequest = (0, _adaptRequest.default)(req);
@@ -303,7 +305,6 @@ app.use((err, req, res, next) => {
   } // console.log(JSON.stringify(req.body))
 
 });
-app.listen(port, () => console.log(`Listening on port 9090` + process.env.PORT || 9090));
-const httpServer = https.createServer(credentials, app);
-httpServer.listen(9443);
+app.listen(port, () => console.log(`Listening on port 9090` + process.env.PORT || 9090)); // const httpServer = https.createServer(credentials, app);
+// httpServer.listen(9443)
 //# sourceMappingURL=index.js.map
