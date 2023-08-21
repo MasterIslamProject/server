@@ -33,13 +33,16 @@ export default function makeAuthEndpointHandler({authQuery}){
   async function getAllHeaders (httpRequest) { 
     
     const { email } = httpRequest.queryParams || {} 
-
+    const { verifyemail } = httpRequest.queryParams || {} 
     var token = httpRequest.headers.authorization
 
-    if(token == undefined){
+    // console.log("The token: "+token)
+
+    if(verifyemail || token == "Bearer -1"){
+      
       const res = {
-        "status": 500,
-        "message": "No token supplied",
+        "status": 200,
+        "message": "Token not needed",
       }
       return {
         headers: {
@@ -49,32 +52,51 @@ export default function makeAuthEndpointHandler({authQuery}){
         data: JSON.stringify(res)
       }
     }
+    
     else {
-      if (email !== undefined ){
-        const result = await authQuery.checkToken(token, email)
+
+      var token = httpRequest.headers.authorization
+
+      if(token == undefined){
+        const res = {
+          "status": 500,
+          "message": "No token supplied",
+        }
         return {
           headers: {
             'Content-Type': 'application/json'
           },
-          statusCode: 200,
-          data: JSON.stringify(result)
+          statusCode: res.status,
+          data: JSON.stringify(res)
         }
-
       }
       else {
-        const result = await authQuery.findByHeader(token);
-        return {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          statusCode: result.status,
-          data: JSON.stringify(result)
+        if (email !== undefined ){
+          const result = await authQuery.checkToken(token, email)
+          return {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            statusCode: 200,
+            data: JSON.stringify(result)
+          }
+
         }
+        else {
+          const result = await authQuery.findByHeader(token);
+          return {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            statusCode: result.status,
+            data: JSON.stringify(result)
+          }
 
+        }
       }
+        
     }
-      
-  }
 
+  }
 
 }

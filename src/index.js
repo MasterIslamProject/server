@@ -118,7 +118,7 @@ app.delete('/user/:id', authenticate, userController);
 app.get('/user/?category=:category', authenticate, userController);
 app.get('/user/?id=:id', authenticate, userController);
 app.get('/user/?email=:email', authenticate, userController);
-app.get('/user/?verifyemail=:verifyemail', userController);
+app.get('/user/verify/?verifyemail=:verifyemail', userController);
 
 function userController (req, res) {
     const httpRequest = adaptRequest(req)

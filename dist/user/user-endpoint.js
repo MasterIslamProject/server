@@ -68,7 +68,6 @@ function makeUserEndpointHandler({
     }
 
     if (verifyemail !== undefined) {
-      console.log("verify email endpoint: " + verifyemail);
       const result = await userQuery.findVerifyEmail({
         verifyemail
       });
@@ -169,6 +168,7 @@ function makeUserEndpointHandler({
           data: JSON.stringify(result)
         };
       } else if (httpRequest.path == '/user/reset_password') {
+        console.log("reset password endpoint");
         const user = (0, _user.default)(userInfo);
         const result = await userQuery.resetPassword(user);
         return {

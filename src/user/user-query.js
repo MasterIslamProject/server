@@ -282,22 +282,33 @@ export default function makeUserQuery({database}){
   }
 
   async function findVerifyEmail ({ verifyemail }) {
-    console.log("verify email query: "+verifyemail)
     const db = await database
     const found = await db
       .collection('Users')
       .findOne({ email: verifyemail })
     if (found) {
-      return {
-        status: "Found",
-        message: "Email exists"
-      }
+      return documentToUser(found)
     }
-    return {
-      status: "Missing",
-      message: "Email missing"
-    }
+    return {}
   }
+
+  // async function findVerifyEmail ({ verifyemail }) {
+  //   console.log("verify email query: "+verifyemail)
+  //   const db = await database
+  //   const found = await db
+  //     .collection('Users')
+  //     .findOne({ email: verifyemail })
+  //   if (found) {
+  //     return {
+  //       status: "Found",
+  //       message: "Email exists"
+  //     }
+  //   }
+  //   return {
+  //     status: "Missing",
+  //     message: "Email missing"
+  //   }
+  // }
 
   async function findByCategory ({ category }) {
     const db = await database;
