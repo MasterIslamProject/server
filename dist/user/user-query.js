@@ -92,10 +92,22 @@ function makeUserQuery({
 
       throw mongoError;
     });
-    return {
-      status: "Success",
-      message: "Successfully added"
-    };
+
+    if (result) {
+      return {
+        status: "Success",
+        message: "Successfully added"
+      };
+    } else {
+      return {
+        status: "Error",
+        message: "Not successfully added"
+      };
+    } //   return {
+    //   status: "Success",
+    //   message: "Successfully added"
+    // }
+
   }
 
   async function auth({

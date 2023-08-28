@@ -52,10 +52,23 @@ export default function makeActivitiesQuery({database}){
             }
             throw mongoError
           })
-        return {
-            success: result.ok === 1,
-            created: documentToActivities(ops[0])
+
+        if (result){
+          return {
+            status: "Success",
+            message: "Upload successful"
+          }
         }
+        else {
+          return {
+            status: "Error",
+            message: "Upload not successful"
+          }
+        }
+        // return {
+        //     success: result.ok === 1,
+        //     created: documentToActivities(ops[0])
+        // }
     }
 
   async function update ({ id, ...activities }) {

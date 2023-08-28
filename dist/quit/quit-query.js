@@ -67,10 +67,18 @@ function makeQuitQuery({
 
       throw mongoError;
     });
-    return {
-      success: result.ok === 1,
-      created: documentToQuit(ops[0])
-    };
+
+    if (result) {
+      return {
+        status: "Success",
+        message: "Upload successful"
+      };
+    } else {
+      return {
+        status: "Error",
+        message: "Upload not successful"
+      };
+    }
   }
 
   async function findById({
